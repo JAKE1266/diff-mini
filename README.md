@@ -1,5 +1,11 @@
 # diff-mini
 
+![Python](https://img.shields.io/badge/python-3.8%2B-blue)
+![License](https://img.shields.io/badge/license-MIT-green)
+![Tests](https://img.shields.io/badge/tests-25%20passing-success)
+![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
+![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
+
 零依赖的文本对比工具 —— `difflib` 的精心封装，三种输出模式，为中文文本优化对齐。
 
 - **unified**：git 风格统一 diff（`---` / `+++` / `@@` 头 + 上下文行数可调）
@@ -90,6 +96,19 @@ for ln in word_diff("发布 版本 1.2", "发布 版本 2.0"):
 ```bash
 python -m unittest discover -s tests
 # Ran 25 tests ... OK
+```
+
+
+## 📁 项目结构
+
+```
+diff-mini/
+├── LICENSE
+├── demo/
+├── diff_mini/
+├── pyproject.toml
+├── tests/
+└── README.md
 ```
 
 ## License
