@@ -1,0 +1,18 @@
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "diff-mini"
+version = "0.1.0"
+description = "零依赖文本对比 CLI：统一/并排/词级标注三模式，CJK 显示宽度对齐，ANSI 着色"
+readme = "README.md"
+requires-python = ">=3.8"
+license = { text = "MIT" }
+keywords = ["diff", "compare", "wdiff", "文本对比"]
+
+[project.scripts]
+diff-mini = "diff_mini.__main__:main"
+
+[tool.setuptools.packages.find]
+include = ["diff_mini*"]
