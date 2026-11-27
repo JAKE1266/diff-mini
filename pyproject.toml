@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "diff-mini"
-version = "0.1.0"
+version = "0.1.1"
 description = "零依赖文本对比 CLI：统一/并排/词级标注三模式，CJK 显示宽度对齐，ANSI 着色"
 readme = "README.md"
 requires-python = ">=3.8"

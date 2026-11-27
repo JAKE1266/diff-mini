@@ -1,10 +1,10 @@
+import os
 import subprocess
 import sys
 import tempfile
 import unittest
 from pathlib import Path
 
-ROOT = Path(__file__).resolve().parent.parent
 PY = sys.executable
 
 
@@ -32,7 +32,7 @@ NEW = """# 发布说明
 
 def run_cli(*args, expect=0):
     r = subprocess.run([PY, "-m", "diff_mini", *args], capture_output=True,
-                       text=True, encoding="utf-8", cwd=ROOT)
+                       text=True, encoding="utf-8")
     if r.returncode != expect:
         raise AssertionError(f"exit={r.returncode} (expect {expect})\n"
                              f"stdout={r.stdout}\nstderr={r.stderr}")
@@ -82,9 +82,25 @@ class TestCli(unittest.TestCase):
     def test_stdin_right_side(self):
         r = subprocess.run([PY, "-m", "diff_mini", self.old, "-", "--mode", "word"],
                            input=NEW, capture_output=True, text=True,
-                           encoding="utf-8", cwd=ROOT)
+                           encoding="utf-8")
         self.assertEqual(r.returncode, 0, r.stderr)
         self.assertIn("{+v1.3+}", r.stdout)
+
+    def test_utf8_bytes_pipe_under_legacy_windows_encoding(self):
+        env = os.environ.copy()
+        env["PYTHONIOENCODING"] = "cp1252"
+        env["PYTHONUTF8"] = "0"
+        r = subprocess.run(
+            [PY, "-m", "diff_mini", self.old, "-", "--mode", "word", "--color", "never"],
+            input=NEW.encode("utf-8"), capture_output=True, env=env,
+        )
+        self.assertEqual(r.returncode, 0, r.stderr.decode("utf-8", errors="replace"))
+        self.assertIn("[-v1.2-]{+v1.3+}".encode("utf-8"), r.stdout)
+        self.assertIn("新增暗色主题".encode("utf-8"), r.stdout)
+
+    def test_version(self):
+        r = run_cli("--version")
+        self.assertEqual(r.stdout.strip(), "diff-mini 0.1.1")
 
     def test_missing_file(self):
         r = run_cli(self.old, "nope.txt", expect=1)

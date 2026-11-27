@@ -30,6 +30,26 @@ class TestLineDiff(unittest.TestCase):
         kinds = [l.kind for l in lines[3:]]
         self.assertEqual(kinds, [SAME, DEL, ADD, ADD, SAME])
 
+    def test_hunk_ranges_follow_unified_format(self):
+        cases = [
+            ("", "alpha\n", "@@ -0,0 +1 @@"),
+            ("alpha\n", "", "@@ -1 +0,0 @@"),
+            ("old\n", "new\n", "@@ -1 +1 @@"),
+        ]
+        for old, new, header in cases:
+            for diff in (line_diff, word_diff):
+                with self.subTest(old=old, new=new, diff=diff.__name__):
+                    self.assertEqual(diff(old, new)[2].text, header)
+
+    def test_zero_context_omits_unchanged_lines(self):
+        a = "\n".join(["first", "old", "last"])
+        b = "\n".join(["first", "new", "last"])
+        for diff in (line_diff, word_diff):
+            with self.subTest(diff=diff.__name__):
+                body = diff(a, b, context=0)[2:]
+                self.assertEqual(body[0].text, "@@ -2 +2 @@")
+                self.assertFalse(any(line.kind == SAME for line in body))
+
     def test_context_limits(self):
         a = "\n".join(str(i) for i in range(20))
         b = a.replace("10", "十")

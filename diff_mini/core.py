@@ -27,6 +27,18 @@ class DiffLine:
     text: str
 
 
+def _format_range(start: int, count: int) -> str:
+    if count == 0:
+        return f"{start},0"
+    if count == 1:
+        return str(start + 1)
+    return f"{start + 1},{count}"
+
+
+def _hunk_header(i1: int, i2: int, j1: int, j2: int) -> str:
+    return f"@@ -{_format_range(i1, i2 - i1)} +{_format_range(j1, j2 - j1)} @@"
+
+
 def _tags_to_lines(a_lines: list[str], b_lines: list[str], opcodes) -> list[DiffLine]:
     out: list[DiffLine] = []
     for tag, a1, a2, b1, b2 in opcodes:
@@ -61,7 +73,7 @@ def line_diff(a_text: str, b_text: str, context: int = 3,
     for group in matcher.get_grouped_opcodes(context):
         i1, i2 = group[0][1], group[-1][2]
         j1, j2 = group[0][3], group[-1][4]
-        out.append(DiffLine(META, f"@@ -{i1 + 1},{max(i2 - i1, 0)} +{j1 + 1},{max(j2 - j1, 0)} @@"))
+        out.append(DiffLine(META, _hunk_header(i1, i2, j1, j2)))
         out.extend(_tags_to_lines(a_lines, b_lines, group))
     return out
 
@@ -98,7 +110,7 @@ def word_diff(a_text: str, b_text: str, context: int = 3,
     for group in matcher.get_grouped_opcodes(context):
         i1, i2 = group[0][1], group[-1][2]
         j1, j2 = group[0][3], group[-1][4]
-        out.append(DiffLine(META, f"@@ -{i1 + 1},{max(i2 - i1, 0)} +{j1 + 1},{max(j2 - j1, 0)} @@"))
+        out.append(DiffLine(META, _hunk_header(i1, i2, j1, j2)))
         for tag, a1, a2, b1, b2 in group:
             if tag == "equal":
                 for ln in a_lines[a1:a2]:

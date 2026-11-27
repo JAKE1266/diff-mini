@@ -2,7 +2,7 @@
 
 ![Python](https://img.shields.io/badge/python-3.8%2B-blue)
 ![License](https://img.shields.io/badge/license-MIT-green)
-![Tests](https://img.shields.io/badge/tests-25%20passing-success)
+![Tests](https://img.shields.io/badge/tests-29%20passing-success)
 ![Dependencies](https://img.shields.io/badge/dependencies-0-brightgreen)
 ![Platform](https://img.shields.io/badge/platform-Windows%20%7C%20macOS%20%7C%20Linux-lightgrey)
 
@@ -12,7 +12,7 @@
 - **word**：词级行内标注，替换行合并为一行，差异词用 `[-旧-]{+新+}` 标出（wdiff 风格）
 - **side**：等宽两栏并排对照；**CJK 按 2 列计宽**，中文行不会错位
 - **颜色**：`--color auto/always/never`，ANSI 按类别着色（增绿删红，元信息青）
-- **管道友好**：`-` 读取 stdin、无差异时静默、退出码语义清晰
+- **管道友好**：`-` 读取 stdin、标准流固定 UTF-8、无差异时静默、退出码语义清晰
 
 零第三方依赖，Python ≥ 3.8。
 
@@ -95,7 +95,7 @@ for ln in word_diff("发布 版本 1.2", "发布 版本 2.0"):
 
 ```bash
 python -m unittest discover -s tests
-# Ran 25 tests ... OK
+# Ran 29 tests ... OK
 ```
 
 
@@ -103,7 +103,10 @@ python -m unittest discover -s tests
 
 ```
 diff-mini/
+├── .github/workflows/
+├── CHANGELOG.md
 ├── LICENSE
+├── MANIFEST.in
 ├── demo/
 ├── diff_mini/
 ├── pyproject.toml

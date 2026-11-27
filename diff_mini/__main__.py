@@ -18,6 +18,13 @@ from .core import colorize, line_diff, side_diff, word_diff
 _MODES = {"unified": line_diff, "word": word_diff, "side": side_diff}
 
 
+def _configure_standard_streams() -> None:
+    for stream in (sys.stdin, sys.stdout, sys.stderr):
+        reconfigure = getattr(stream, "reconfigure", None)
+        if reconfigure is not None:
+            reconfigure(encoding="utf-8", errors="replace")
+
+
 def _read(path: str) -> str:
     if path == "-":
         return sys.stdin.read()
@@ -28,6 +35,7 @@ def _read(path: str) -> str:
 
 
 def main(argv=None) -> int:
+    _configure_standard_streams()
     ap = argparse.ArgumentParser(prog="diff-mini", description="文本对比：统一 / 并排 / 词级标注")
     ap.add_argument("--version", action="version", version=f"diff-mini {__version__}")
     ap.add_argument("old", help="旧文件（'-' 表示 stdin）")
